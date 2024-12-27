@@ -1,57 +1,56 @@
-# SCsub
+# SCsub file for the ROS2 module
 import os
-
 from pathlib import Path
 
+# Import the environment configuration
 Import('env')
 
-ros_distro = "iron"
+# Compiler settings
 cpp_version = "-std=c++17"
+exceptions = "-fexceptions"
 
-ros_dir = "/opt/ros/" + ros_distro
+# Retrieve the ROS2 package prefix and list of packages
+pkg_prefix = os.popen("ros2 pkg prefix rclcpp").read().strip()
+pkg_list = os.popen("ros2 pkg list").read().strip()
 
-def getSubDirs(base_path: str, with_base_path: bool = True):
-    if not base_path.endswith("/"):
-        base_path += "/"
-    sub_dirs = [name for name in os.listdir(base_path) if os.path.isdir(base_path + name)]
-    if with_base_path:
-        sub_dirs = [f"{base_path}/{name}" for name in sub_dirs]
-    return sub_dirs
+# Define the path for ROS libraries
+ros_lib_path = os.path.join(pkg_prefix, "lib")
 
-
-def getLibNames(base_path: str):
-    if not base_path.endswith("/"):
-        base_path += "/"
-    lib_dirs = [
-        Path(name).name
-        for name in os.listdir(base_path)
-        if os.path.isfile(base_path + name)
-        if name.endswith(".so") or name.endswith(".a")
-    ]
-    return lib_dirs
-
-ros_includes = getSubDirs(ros_dir + "/include")
-ros_lib_path = ros_dir + "/lib"
-ros_libs = getLibNames(ros_lib_path)
-
-# Add all cpp files to the build
+# Add all .cpp files from the source directories to the build
 env.add_source_files(env.modules_sources, "src/demos/*.cpp")
 env.add_source_files(env.modules_sources, "*.cpp")
 
-# These paths are relative to /modules/ros if they are not absolute
-env.Append(CPPPATH=["include"] + ros_includes)
+# Include directories to be added to the build
+includes_list = ["include"]
+pkg_names = []
 
-# LIBPATH and LIBS need to be set on the real "env" (not the clone)
-# to link the specified libraries to the Godot executable.
+# Add the include directories for each package
+for pkg in pkg_list.split("\n"):
+    pkg_path = os.path.join(pkg_prefix, "include", pkg)
+    pkg_names.append(pkg)
+    includes_list.append(pkg_path)
 
-# This is a path relative to /modules where your .a libraries reside.
-# If you are compiling the module externally (not in the godot source tree),
-# these will need to be full paths.
+env.Append(CPPPATH=includes_list)
+
+# Function to get library names from a given path
+def get_lib_names(base_path: str):
+    if not base_path.endswith("/"):
+        base_path += "/"
+    return [
+        Path(name).name
+        for name in os.listdir(base_path)
+        if os.path.isfile(os.path.join(base_path, name)) and (name.endswith(".so") or name.endswith(".a"))
+    ]
+
+# Set the library path for linking
 env.Append(LIBPATH=[ros_lib_path])
 
-# ROS needs c++ version compilier flag
-env.Append(CCFLAGS=[cpp_version])
+# Append the necessary compiler flags
+env.Append(CCFLAGS=[cpp_version, exceptions])
 
-# Check with the documentation of the external library to see which library
-# files should be included/linked.
+# Get the list of ROS libraries
+ros_libs = get_lib_names(ros_lib_path)
 env.Append(LIBS=ros_libs)
+
+# Exit the script (if needed, uncomment the line below)
+# exit(0)
