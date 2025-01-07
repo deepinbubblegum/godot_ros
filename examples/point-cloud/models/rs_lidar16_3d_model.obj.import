@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://co5gkcbm3tihx"
+path="res://.godot/imported/rs_lidar16_3d_model.obj-8b08fc35982f0c6ebe66be4c77b4eb2b.mesh"
+
+[deps]
+
+files=["res://.godot/imported/rs_lidar16_3d_model.obj-8b08fc35982f0c6ebe66be4c77b4eb2b.mesh"]
+
+source_file="res://models/rs_lidar16_3d_model.obj"
+dest_files=["res://.godot/imported/rs_lidar16_3d_model.obj-8b08fc35982f0c6ebe66be4c77b4eb2b.mesh", "res://.godot/imported/rs_lidar16_3d_model.obj-8b08fc35982f0c6ebe66be4c77b4eb2b.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(0.001, 0.001, 0.001)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false
