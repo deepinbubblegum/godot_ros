@@ -28,20 +28,22 @@
 #include "godot_ros/demos/cmd_listener.hpp"
 #include "godot_ros/demos/view_port.hpp"
 #include "godot_ros/demos/raycast_publisher.hpp"
+// #include "godot_ros/sensors/lidars/rslidars.hpp"
 
 void initialize_godot_ros_module(ModuleInitializationLevel p_level) {
     if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
-            return;
+        return;
     }
     ClassDB::register_class<Talker>();
     ClassDB::register_class<ViewPort>();
     ClassDB::register_class<CmdListener>();
     ClassDB::register_class<RayCastPublisher>();
+    // ClassDB::register_class<RSlidars>();
 }
 
 void uninitialize_godot_ros_module(ModuleInitializationLevel p_level) {
     if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
-            return;
+        return;
     }
    // Nothing to do here in this example.
 }

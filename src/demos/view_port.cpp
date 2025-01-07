@@ -23,8 +23,11 @@
 
 #include "godot_ros/demos/view_port.hpp"
 
+bool ViewPort::initialized = false;
+
 void ViewPort::_bind_methods()
 {
+  ClassDB::bind_method(D_METHOD("create", "nodestr", "pubstr"), &ViewPort::create);
   ClassDB::bind_method(D_METHOD("pubImage", "img"), &ViewPort::pubImage);
   ClassDB::bind_method(D_METHOD("spin_some"), &ViewPort::spin_some);
 }

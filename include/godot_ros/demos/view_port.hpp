@@ -23,32 +23,76 @@
 #include <iostream>
 
 #include "core/object/ref_counted.h"
+#include "core/string/ustring.h"
 #include "core/io/image.h"
 
 #include "rclcpp/rclcpp.hpp"
+#include "rcutils/logging.h"
 #include "sensor_msgs/msg/image.hpp"
 
-class ViewPort : public RefCounted {
+class ViewPort : public RefCounted
+{
   GDCLASS(ViewPort, RefCounted);
-public:
-  ViewPort() {
-    rclcpp::init(0, nullptr);
-    
-    m_node = std::make_shared<rclcpp::Node>("godot_image_node");
 
-    m_pub = m_node->create_publisher<sensor_msgs::msg::Image>("image", 10);
+public:
+  static bool initialized;
+
+  ViewPort()
+  {
+    if (!ViewPort::initialized)
+    {
+      ViewPort::initialized = true;
+
+      bool success = true;
+      try
+      {
+        rclcpp::init(0, nullptr);
+      }
+      catch (...)
+      {
+        success = false;
+      }
+
+      if (success)
+      {
+        // Set up logging
+        rcutils_logging_initialize();
+
+        // Optional: Set the global severity level
+        rcutils_logging_set_default_logger_level(RCUTILS_LOG_SEVERITY_DEBUG);
+      }
+    }
+    // m_pNode = memnew(rclcpp::Node("godot_image_node"));
+    // m_node = std::shared_ptr<rclcpp::Node>(m_pNode);
+    // auto ptr = shared_ptr<Foo>(shared_ptr<Foo>(), p);
   }
 
-  ~ViewPort() {
+  ~ViewPort()
+  {
     rclcpp::shutdown();
   }
 
-  inline void spin_some() {
+  inline void create(const String &p_node, const String &p_publisher)
+  {
+    try
+    {
+      m_node = std::make_shared<rclcpp::Node>(p_node.ascii().get_data());                            // "godot_image_node"
+      m_pub = m_node->create_publisher<sensor_msgs::msg::Image>(p_publisher.ascii().get_data(), 10); // "image"
+    }
+    catch (...)
+    {
+      std::cout << "error" << std::endl;
+    }
+  }
+
+  inline void spin_some()
+  {
     rclcpp::spin_some(m_node);
   }
 
   // publish message
-  inline void pubImage(const Ref<Image> & img) {
+  inline void pubImage(const Ref<Image> &img)
+  {
     m_msg = std::make_unique<sensor_msgs::msg::Image>();
     // populate image data
     m_msg->height = img->get_height();
