@@ -2,10 +2,9 @@
 
 RSlidars::RSlidars()
 {
-    rclcpp::init(0, nullptr);
-    node = std::make_shared<rclcpp::Node>("godot_lidars_node");
-    rclcpp::QoS qos(rclcpp::KeepLast(7));
-    pub = node->create_publisher<sensor_msgs::msg::PointCloud2>("rslidar", qos);
+    try{
+        rclcpp::init(0, nullptr);
+    } catch (...) {}
 }
 
 RSlidars::~RSlidars()
@@ -13,15 +12,26 @@ RSlidars::~RSlidars()
     rclcpp::shutdown();
 }
 
+void RSlidars::init(const String &node_name, const String &topic_name, const String &frame_id)
+{
+    node_name_ = node_name;
+    topic_name_ = topic_name;
+    frame_id_ = frame_id;
+
+    m_node = std::make_shared<rclcpp::Node>(node_name.utf8().get_data());
+    rclcpp::QoS qos(rclcpp::KeepLast(1));
+    m_pub = m_node->create_publisher<sensor_msgs::msg::PointCloud2>(topic_name.utf8().get_data(), qos);
+}
+
 void RSlidars::spin_some()
 {
-    rclcpp::spin_some(node);
+    rclcpp::spin_some(m_node);
 }
 
 void RSlidars::publisher(const Array ray_cast_array)
 {
     auto msg = std::make_unique<sensor_msgs::msg::PointCloud2>();
-    msg->header.frame_id = "rslidar";
+    msg->header.frame_id = frame_id_.utf8().get_data();
     msg->header.stamp = rclcpp::Clock().now();
     
     sensor_msgs::PointCloud2Modifier modifier(*msg);
@@ -35,15 +45,16 @@ void RSlidars::publisher(const Array ray_cast_array)
     for (int i = 0; i < ray_cast_array.size(); ++i, ++iter_x, ++iter_y, ++iter_z) {
         Vector3 new_position = ray_cast_array[i];
         *iter_x = new_position.x;
-        *iter_y = new_position.z;
-        *iter_z = new_position.y;
+        *iter_y = new_position.z; // In Godot X = X Axis, but Y and Z are inverted
+        *iter_z = new_position.y; // In Godot X = X Axis, but Y and Z are inverted
     }
     
-    pub->publish(std::move(msg));
+    m_pub->publish(std::move(msg));
 }
 
 void RSlidars::_bind_methods()
 {
+    ClassDB::bind_method(D_METHOD("init", "node_name", "topic_name", "frame_id"), &RSlidars::init);
     ClassDB::bind_method(D_METHOD("spin_some"), &RSlidars::spin_some);
     ClassDB::bind_method(D_METHOD("publisher", "ray_cast_array"), &RSlidars::publisher);
 }

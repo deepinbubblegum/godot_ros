@@ -26,6 +26,7 @@ var delta_v = 2 * VERTICAL_OPERTURE_ANGLE / (MAX_ROW - 1)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	ros_rslidar.init("rslidar_node", "rs_point", "rslidar") 
 	ros_rslidar.spin_some()
 	create_ray_matrix()
 

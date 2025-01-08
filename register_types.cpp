@@ -29,7 +29,7 @@
 #include "godot_ros/demos/view_port.hpp"
 #include "godot_ros/demos/raycast_publisher.hpp"
 #include "godot_ros/sensors/camera/camera_ros.hpp"
-// #include "godot_ros/sensors/lidars/rslidars.hpp"
+#include "godot_ros/sensors/lidars/rslidars.hpp"
 
 void initialize_godot_ros_module(ModuleInitializationLevel p_level) {
     if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
@@ -40,7 +40,7 @@ void initialize_godot_ros_module(ModuleInitializationLevel p_level) {
     ClassDB::register_class<CmdListener>();
     ClassDB::register_class<RayCastPublisher>();
     ClassDB::register_class<CameraRos>();
-    // ClassDB::register_class<RSlidars>();
+    ClassDB::register_class<RSlidars>();
 }
 
 void uninitialize_godot_ros_module(ModuleInitializationLevel p_level) {

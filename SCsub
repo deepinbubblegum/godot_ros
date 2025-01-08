@@ -18,7 +18,7 @@ ros_lib_path = os.path.join(pkg_prefix, "lib")
 
 # Add all .cpp files from the source directories to the build
 env.add_source_files(env.modules_sources, "src/demos/*.cpp")
-# env.add_source_files(env.modules_sources, "src/sensors/lidars/*.cpp")
+env.add_source_files(env.modules_sources, "src/sensors/lidars/*.cpp")
 env.add_source_files(env.modules_sources, "src/sensors/camera/*.cpp")
 env.add_source_files(env.modules_sources, "*.cpp")
 
