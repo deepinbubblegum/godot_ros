@@ -1,7 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://2cmogkum3dv7"]
+[gd_scene load_steps=15 format=3 uid="uid://2cmogkum3dv7"]
 
 [ext_resource type="Script" path="res://scripts/talker.gd" id="1_ifoms"]
 [ext_resource type="ArrayMesh" uid="uid://co5gkcbm3tihx" path="res://models/rs_lidar16_3d_model.obj" id="1_t0asp"]
+[ext_resource type="Script" path="res://scripts/RSlidar16.gd" id="3_noeei"]
+[ext_resource type="Script" path="res://scripts/test/ray_cast_3d.gd" id="4_j7lce"]
 [ext_resource type="Script" path="res://scripts/camera.gd" id="4_qiomn"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_a8i27"]
@@ -22,9 +24,13 @@ size = Vector2(20, 20)
 
 [sub_resource type="ORMMaterial3D" id="ORMMaterial3D_7npgq"]
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_wegf0"]
+
 [sub_resource type="BoxMesh" id="BoxMesh_r4lqc"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_hicos"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uqom1"]
 
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_ifoms")
@@ -40,9 +46,17 @@ shadow_enabled = true
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -1.5, 0.5, 0.1)
 current = true
 
-[node name="Ground" type="MeshInstance3D" parent="."]
+[node name="RigidBody3D2" type="RigidBody3D" parent="."]
+freeze = true
+
+[node name="Ground" type="MeshInstance3D" parent="RigidBody3D2"]
+transform = Transform3D(1, 0, 0, 0, 15.0969, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("PlaneMesh_7v1pa")
+skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("ORMMaterial3D_7npgq")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D2"]
+shape = SubResource("BoxShape3D_wegf0")
 
 [node name="box" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.5, 0, 0, 0, 1, 0, 0.25, 0)
@@ -51,15 +65,27 @@ mesh = SubResource("BoxMesh_r4lqc")
 [node name="RSlidar16" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0.5, 0)
 mesh = ExtResource("1_t0asp")
+script = ExtResource("3_noeei")
 
-[node name="box1" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.65856, 0.5, 0)
-mesh = SubResource("BoxMesh_hicos")
+[node name="RayCast3D" type="RayCast3D" parent="RSlidar16"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -0.0314283, 2.74756e-09)
+target_position = Vector3(0, 0, 10)
+script = ExtResource("4_j7lce")
 
 [node name="box2" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.588822, 0.5, -1.64571)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.584232, 0.5, -1.64571)
 mesh = SubResource("BoxMesh_hicos")
 
 [node name="Camera" type="Camera3D" parent="."]
 transform = Transform3D(0.0771193, 0, -0.997022, 0, 1, 0, 0.997022, 0, 0.0771193, -2.23566, 0.666019, -1.8335)
 script = ExtResource("4_qiomn")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.9802, 1.84738, 0.0159637)
+
+[node name="box1" type="MeshInstance3D" parent="RigidBody3D"]
+mesh = SubResource("BoxMesh_hicos")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+shape = SubResource("BoxShape3D_uqom1")
