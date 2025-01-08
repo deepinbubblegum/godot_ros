@@ -23,7 +23,7 @@ func _ready():
 
 # Called on timeout signal
 func _on_Timer_timeout():
-	print("Godot is talking: " + str(count))
+	# print("Godot is talking: " + str(count))
 	# Talk callback publishes to ROS
 	ros_talker.talk(count)
 	count += 1

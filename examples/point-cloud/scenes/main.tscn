@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/talker.gd" id="1_ifoms"]
 [ext_resource type="ArrayMesh" uid="uid://co5gkcbm3tihx" path="res://models/rs_lidar16_3d_model.obj" id="1_t0asp"]
-[ext_resource type="Script" path="res://scripts/viewport_publisher.gd" id="2_6y2j7"]
+[ext_resource type="Script" path="res://scripts/camera.gd" id="4_qiomn"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_a8i27"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -36,9 +36,9 @@ environment = SubResource("Environment_oadc5")
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 8.77602, 0)
 shadow_enabled = true
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.544431, 2.24956)
-script = ExtResource("2_6y2j7")
+[node name="MainCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.112862, 0.544431, 2.24956)
+current = true
 
 [node name="Ground" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_7v1pa")
@@ -57,5 +57,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.65856, 0.5, 0)
 mesh = SubResource("BoxMesh_hicos")
 
 [node name="box2" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.588822, 0.5, 5.5966)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.588822, 0.5, -1.64571)
 mesh = SubResource("BoxMesh_hicos")
+
+[node name="Camera" type="Camera3D" parent="."]
+transform = Transform3D(0.0771193, 0, -0.997022, 0, 1, 0, 0.997022, 0, 0.0771193, -2.23566, 0.666019, -1.8335)
+script = ExtResource("4_qiomn")

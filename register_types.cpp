@@ -28,6 +28,7 @@
 #include "godot_ros/demos/cmd_listener.hpp"
 #include "godot_ros/demos/view_port.hpp"
 #include "godot_ros/demos/raycast_publisher.hpp"
+#include "godot_ros/sensors/camera/camera_ros.hpp"
 // #include "godot_ros/sensors/lidars/rslidars.hpp"
 
 void initialize_godot_ros_module(ModuleInitializationLevel p_level) {
@@ -38,6 +39,7 @@ void initialize_godot_ros_module(ModuleInitializationLevel p_level) {
     ClassDB::register_class<ViewPort>();
     ClassDB::register_class<CmdListener>();
     ClassDB::register_class<RayCastPublisher>();
+    ClassDB::register_class<CameraRos>();
     // ClassDB::register_class<RSlidars>();
 }
 

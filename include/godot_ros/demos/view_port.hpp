@@ -30,69 +30,55 @@
 #include "rcutils/logging.h"
 #include "sensor_msgs/msg/image.hpp"
 
-class ViewPort : public RefCounted
-{
+class ViewPort : public RefCounted {
   GDCLASS(ViewPort, RefCounted);
-
 public:
   static bool initialized;
 
-  ViewPort()
-  {
-    if (!ViewPort::initialized)
-    {
+  ViewPort() {
+    if (!ViewPort::initialized) {
       ViewPort::initialized = true;
 
       bool success = true;
-      try
-      {
-        rclcpp::init(0, nullptr);
+      try {
+	rclcpp::init(0, nullptr);
+      } catch (...) {
+	success = false;
       }
-      catch (...)
-      {
-        success = false;
-      }
+      
+      if (success) {
+	// Set up logging
+	rcutils_logging_initialize();
 
-      if (success)
-      {
-        // Set up logging
-        rcutils_logging_initialize();
-
-        // Optional: Set the global severity level
-        rcutils_logging_set_default_logger_level(RCUTILS_LOG_SEVERITY_DEBUG);
+	// Optional: Set the global severity level
+	rcutils_logging_set_default_logger_level(RCUTILS_LOG_SEVERITY_DEBUG);
       }
     }
-    // m_pNode = memnew(rclcpp::Node("godot_image_node"));
-    // m_node = std::shared_ptr<rclcpp::Node>(m_pNode);
-    // auto ptr = shared_ptr<Foo>(shared_ptr<Foo>(), p);
+    //m_pNode = memnew(rclcpp::Node("godot_image_node"));
+    //m_node = std::shared_ptr<rclcpp::Node>(m_pNode);
+    //auto ptr = shared_ptr<Foo>(shared_ptr<Foo>(), p);
   }
 
-  ~ViewPort()
-  {
-    rclcpp::shutdown();
+  ~ViewPort() {
+      rclcpp::shutdown();
   }
 
-  inline void create(const String &p_node, const String &p_publisher)
-  {
-    try
-    {
-      m_node = std::make_shared<rclcpp::Node>(p_node.ascii().get_data());                            // "godot_image_node"
-      m_pub = m_node->create_publisher<sensor_msgs::msg::Image>(p_publisher.ascii().get_data(), 10); // "image"
-    }
-    catch (...)
-    {
-      std::cout << "error" << std::endl;
+  inline void create(const String &p_node, const String &p_publisher) {
+    try {
+        m_node = std::make_shared<rclcpp::Node>(p_node.ascii().get_data()); // "godot_image_node"
+	m_pub = m_node->create_publisher<sensor_msgs::msg::Image>(p_publisher.ascii().get_data(), 10); // "image"
+    } catch (...) {
+    	std::cout << "error" << std::endl;
     }
   }
 
-  inline void spin_some()
-  {
-    rclcpp::spin_some(m_node);
+  inline void spin_some() {
+      rclcpp::spin_some(m_node); //.get());
+      //std::cout << "spin_some" << std::endl;
   }
 
   // publish message
-  inline void pubImage(const Ref<Image> &img)
-  {
+  inline void pubImage(const Ref<Image> & img) {
     m_msg = std::make_unique<sensor_msgs::msg::Image>();
     // populate image data
     m_msg->height = img->get_height();
@@ -114,6 +100,7 @@ protected:
 
   // replace rclcpp::Node with your custom node
   std::shared_ptr<rclcpp::Node> m_node;
+  //rclcpp::Node* m_pNode;
 
   // publisher
   rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr m_pub;

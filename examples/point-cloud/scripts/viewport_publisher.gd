@@ -8,6 +8,7 @@ var ros_viewport = ViewPort.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	print("ROS Viewport Name: ", name)
 	ros_viewport.create("godot_image_node", name)
 	# Create and configure the timer
 	timer = Timer.new()
